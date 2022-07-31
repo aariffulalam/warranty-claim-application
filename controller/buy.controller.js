@@ -23,7 +23,7 @@ const buy = async (req, res)=>{
         return res.status(401).json({title:"wrong credentials", message:" user or product is not exist."})
     }
     const qrcode = await generateQR(userid, productid);
-    // console.log(qrcode)
+    console.log(qrcode)
     // console.log(isUser.email, qrcode)
     await sendmail(isUser.email, qrcode)
     res.send("hope is working")

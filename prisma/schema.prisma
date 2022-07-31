@@ -48,11 +48,29 @@ model User {
   updatedAt      DateTime @updatedAt
 }
 
-model warranty{
+model WarrantyRegistration{
   id Int @id @default(autoincrement())
-  userId Int 
-  productId Int
-  invoiceImage String
+  name String
+  number String
+  email String 
+  distributor String
+  product String
+  purchaseDate DateTime
+  orderNumber String @unique
+  serialNumber String
+  verify Boolean @default(false)
+  warrantyId WarrantyClaim[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model WarrantyClaim{
+  id Int @id @default(autoincrement())
+  orderNumber String
+  serialNumber String
+  invoice String
+  registration WarrantyRegistration @relation(fields: [registrationId] , references: [id])
+  registrationId Int
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
