@@ -17,18 +17,10 @@ app.get('/', async (req, res, next) => {
   res.send({ message: 'Awesome it works 🐻' });
 });
 
-app.use('/api', require('./routes/api.route'));
-
-// user Api
-app.use("/user", require('./routes/user.route'))
-app.use("/seller", require('./routes/seller.route'))
-app.use("/product", require('./routes/product.route'))
 
 // warranty
 app.use('/warranty', require('./routes/warranty.route'))
 
-// buy
-app.use('/buy', require('./routes/buy.route'))
 
 app.use((req, res, next) => {
   next(createError.NotFound());

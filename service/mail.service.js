@@ -2,7 +2,8 @@ const e = require('express');
 const nodemailer = require('nodemailer');
 const config = require('../config/cofiguration')
 
-const sendmail = async(to)=>{
+const sendmail = async(to, otp)=>{
+    console.log("i am in email ",to, " and this is otp ", otp)
     const transport = nodemailer.createTransport({
         service: "gmail",
         auth:{
@@ -14,8 +15,8 @@ const sendmail = async(to)=>{
         from: config.nodemailerUser,
         to,
         subject : `Warranty verification.`,
-        // text:  `this otp ${otp} is for Warranty verificaion.`
-        html: `<h1>Product bill</h1><p>thank you!</p><img src="https://chart.googleapis.com/chart?chf=bg,s,65432100&cht=qr&chs=250x250&chl=ajsdfkjasdf">`
+        text:  `this otp ${otp} is for Warranty verificaion.`
+        // html: `<h1>Product bill ${otp}</h1><h2>otp  -  </h2><p>thank you!</p><img src="https://chart.googleapis.com/chart?chf=bg,s,65432100&cht=qr&chs=250x250&chl=ajsdfkjasdf">`
     }
     transport.sendMail(mailDetails,(err, res)=>{
         if(err){

@@ -1,15 +1,12 @@
 const router = require('express').Router();
 const {upload} = require('../middleware/multer')
 
-const { first, third, warrantyRegistration, warrantyVerification, registerComplain } = require('../controller/warranty.controller');
+const { warrantyRegistration, warrantyVerification, registerComplain } = require('../controller/warranty.controller');
 
-router.post('/first', first )
-// router.post("/second",)
-router.post("/third",upload.single('invoice'), third)
 
 // started from new
 router.post("/register",warrantyRegistration)
-router.post("/vrify", warrantyVerification)
+router.get("/verify", warrantyVerification)
 router.post("/claim", upload.single('invoice'),registerComplain)
 
 

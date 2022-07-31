@@ -23,7 +23,8 @@
     "otp-generator": "^4.0.0",
     "prisma": "^4.1.0",
     "qrcode": "^1.5.1",
-    "qrcode-reader": "^1.0.4"
+    "qrcode-reader": "^1.0.4",
+    "redis": "^4.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
