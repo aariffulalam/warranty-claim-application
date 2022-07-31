@@ -6,7 +6,7 @@ const { warrantyRegistration, warrantyVerification, registerComplain } = require
 
 // started from new
 router.post("/register",warrantyRegistration)
-router.get("/verify", warrantyVerification)
+router.post("/verify", warrantyVerification)
 router.post("/claim", upload.single('invoice'),registerComplain)
 
 

@@ -3,6 +3,9 @@ const prisma = new PrismaClient();
 const {sendmail} = require('../service/mail.service')
 const {otp} = require('../service/otp.service')
 
+// Redis
+const client = require("../database/redis")
+
 // read QRCode
 // const fs = require("fs").promises;
 // const Jimp = require('jimp');
@@ -29,6 +32,7 @@ const warrantyRegistration = async (req, res)=>{
             }
         });
         await sendmail(email, otp) 
+        client.setEx("otp",60*60*24, otp)
         res.status(200).json({title:"success", message:register});
     } catch (error) {
         res.status(500).json({title:"Error", message:"internal error", error})
@@ -37,7 +41,16 @@ const warrantyRegistration = async (req, res)=>{
 
 const warrantyVerification = async (req, res)=>{
     const {otp, orderNumber} = req.body;
-    console.log(otp, orderNumber)
+    // console.log(otp, orderNumber)
+    
+    const redisOTP = await client.get("otp", (err, res)=>{
+        return res
+    })
+    console.log(redisOTP)
+    if (redisOTP != otp){
+        return res.status(201).json({title:"invalid input", message:"user otp is wrong."})
+    }
+
     const register = await prisma.warrantyRegistration.findUnique({
         where:{
             orderNumber
@@ -49,7 +62,7 @@ const warrantyVerification = async (req, res)=>{
     else if(register.verify){
         return res.status(201).json({title:"vrification", message:"user already verified"});
     }
-    console.log("i am working")
+    // console.log("i am working")
     const verify = await prisma.warrantyRegistration.update({
         where:{
             orderNumber

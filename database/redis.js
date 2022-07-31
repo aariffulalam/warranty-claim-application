@@ -12,7 +12,7 @@ client.on("connect",()=>{
 });
 
 client.on("error",(err)=>{
-    console.log("redis error - ",error)
+    console.log("redis error - ",err)
 });
 
 module.exports = client;
