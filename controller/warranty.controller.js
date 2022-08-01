@@ -98,7 +98,11 @@ const registerComplain = async (req, res)=>{
         console.log(orderNumber, serialNumber, fileName, register.id)
         console.log("i am elsesssss")
         const createWarrantyClaim = await prisma.warrantyClaim.create({
-            data:{
+            data:{productGroup,
+                problem,
+                problemDescription,
+                shippingAddress,
+                pickupAddress,
                 orderNumber,
                 serialNumber,
                 invoice : fileName,
@@ -106,11 +110,11 @@ const registerComplain = async (req, res)=>{
             }
         })
         console.log(createWarrantyClaim)
+        res.status(200).json({title:"successful", message:`warranty claimed successfully `, data: createWarrantyClaim})
     } 
     catch (error) {
         res.status(500).json({title:"Error", message:"internal error", error})
     }
-
 }
     
 module.exports = {warrantyRegistration, warrantyVerification, registerComplain}

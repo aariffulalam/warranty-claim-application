@@ -32,6 +32,11 @@ model WarrantyClaim{
   orderNumber String
   serialNumber String
   invoice String
+  productGroup String
+  problem String
+  problemDescription String
+  shippingAddress String
+  pickupAddress String
   registration WarrantyRegistration @relation(fields: [registrationId] , references: [id])
   registrationId Int
   createdAt      DateTime @default(now())
