@@ -15,7 +15,9 @@ const client = require("../database/redis")
 // started from new
 const warrantyRegistration = async (req, res)=>{
     const {name, number, email, distributor, purchaseDate, product, orderNumber, serialNumber} = req.body;
-    console.log(Date(purchaseDate))
+    console.log(purchaseDate)
+    const date = purchaseDate+"T00:00:00Z"
+    console.log(date)
     // const date = purchaseDate.split("-")
 
     try {    
@@ -25,7 +27,7 @@ const warrantyRegistration = async (req, res)=>{
                 number,
                 email,
                 distributor,
-                purchaseDate,
+                purchaseDate:date,
                 product,
                 orderNumber,
                 serialNumber
@@ -33,7 +35,7 @@ const warrantyRegistration = async (req, res)=>{
         });
         await sendmail(email, otp) 
         client.setEx("otp",60*60*24, otp)
-        res.status(200).json({title:"success", message:register});
+        res.status(200).json({title:"success", message:"successfull registered", data:register});
     } catch (error) {
         res.status(500).json({title:"Error", message:"internal error", error})
     };
@@ -48,7 +50,7 @@ const warrantyVerification = async (req, res)=>{
     })
     console.log(redisOTP)
     if (redisOTP != otp){
-        return res.status(201).json({title:"invalid input", message:"user otp is wrong."})
+        return res.status(400).json({title:"invalid input", message:"user otp is wrong."})
     }
 
     const register = await prisma.warrantyRegistration.findUnique({
@@ -57,10 +59,10 @@ const warrantyVerification = async (req, res)=>{
         }
     })
     if (!register){
-        return res.status(201).json({title:"wrong user", message:"user not registered."});
+        return res.status(400).json({title:"wrong user", message:"user not registered."});
     }
     else if(register.verify){
-        return res.status(201).json({title:"vrification", message:"user already verified"});
+        return res.status(400).json({title:"vrification", message:"user already verified"});
     }
     // console.log("i am working")
     const verify = await prisma.warrantyRegistration.update({
@@ -76,6 +78,9 @@ const warrantyVerification = async (req, res)=>{
 
 const registerComplain = async (req, res)=>{
     const {name, email, number, distributor, product, orderNumber, serialNumber, purchaseDate, productGroup, problem, problemDescription, shippingAddress, pickupAddress} = req.body;
+    console.log(req.body)
+
+    
     const fileName = req.file.path.split("/")[1]
     // console.log(fileName)
     try {        
@@ -86,17 +91,28 @@ const registerComplain = async (req, res)=>{
         })
         // console.log(register)
         if (!register){
-            console.log("if")
-            return res.status(201).json({title:'Registration Error', message:"warranty not register"})
+            // console.log("if")
+            return res.status(400).json({title:'Registration Error', message:"warranty not register"})
         }
         else if (!register.verify){
-            console.log("else")
-            return res.status(201).json({title:"verification Error", message:"user not verified in warranty registration form"})
+            // console.log("else")
+            return res.status(400).json({title:"verification Error", message:"user not verified in warranty registration form"})
         }
-        console.log(orderNumber)
-        console.log("i am elsesssss")
-        console.log(orderNumber, serialNumber, fileName, register.id)
-        console.log("i am elsesssss")
+        
+        // console.log(orderNumber)
+        // console.log("i am elsesssss")
+        // console.log(orderNumber, serialNumber, fileName, register.id)
+        // console.log("i am elsesssss")
+
+        // finding how much days 
+        const currentDate = new Date();
+        const invoiceDate = new Date(purchaseDate.split("T"))
+        const time = Math.abs(currentDate - invoiceDate)
+        const days = Math.ceil(time/(1000*60*60*24))
+        if (days>365){
+            return res.status(400).json({title:"Error", message:'This products warranty is already copleted'})
+        }
+
         const createWarrantyClaim = await prisma.warrantyClaim.create({
             data:{productGroup,
                 problem,
@@ -109,7 +125,7 @@ const registerComplain = async (req, res)=>{
                 registrationId:register.id
             }
         })
-        console.log(createWarrantyClaim)
+        // console.log(createWarrantyClaim)
         res.status(200).json({title:"successful", message:`warranty claimed successfully `, data: createWarrantyClaim})
     } 
     catch (error) {

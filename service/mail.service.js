@@ -15,8 +15,37 @@ const sendmail = async(to, otp)=>{
         from: config.nodemailerUser,
         to,
         subject : `Warranty verification.`,
-        text:  `this otp ${otp} is for Warranty verificaion.`
-        // html: `<h1>Product bill ${otp}</h1><h2>otp  -  </h2><p>thank you!</p><img src="https://chart.googleapis.com/chart?chf=bg,s,65432100&cht=qr&chs=250x250&chl=ajsdfkjasdf">`
+        // text:  `this otp ${otp} is for Warranty verificaion.`
+        html: `<div class="c-email" style="
+        overflow: hidden;
+        background-color:#c2dbfc;
+        box-shadow: 0px 7px 22px 0px rgba(0, 0, 0, .1)">
+            <div class="c-email__header" style="background-color: #0fd59f; width: 100%; height: 60px;">
+                <h1 class="c-email__header__title" style="font-size: 23px; margin: 0; text-align: center; color: white; padding-top: 20px;">Your Verification Code is</h1>
+            </div>
+            <div class="c-email__content" style="width: 100%; background-color: #fff; padding: 15px; text-align: center; background-color:#c2dbfc;">
+                <p class="c-email__content__text text-title"
+                    style="font-size: 20px;  text-align: center; color: #343434; margin-top: 0;">
+                   This is Warranty application.
+                </p>
+                <div class="c-email__code" style="display: block;
+                width: 60%;
+                margin: 30px auto;
+                background-color: #ddd;
+                border-radius: 40px;
+                padding: 20px;
+                text-align: center;
+                font-size: 36px;
+                letter-spacing: 10px;
+                box-shadow: 0px 7px 22px 0px rgba(0, 0, 0, .1);">
+                    <span class="c-email__code__text">${otp}</span>
+                </div>
+                <p class="c-email__content__text text-italic opacity-30 text-title mb-0">Verification code is valid only for 1
+                    hour</p>
+                </div>
+                <!-- <div class="c-email__footer" style="width: 100%; height: 60px; background-color: #fff; box-shadow: 0px 7px 22px 0px rgba(0, 0, 0, .1);"></div> -->
+                <p style="text-align: center;">Don't share the otp with any one</p>
+        </div>`
     }
     transport.sendMail(mailDetails,(err, res)=>{
         if(err){
